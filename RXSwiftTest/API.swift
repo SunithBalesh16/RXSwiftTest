@@ -55,10 +55,10 @@ struct Endpoint {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         
-//        let token = User.shared.getCurrentUser().token
-//        if token != "" {
-//            request.setValue(token, forHTTPHeaderField: "Authorization")
-//        }
+        let token = User.shared.getCurrentUser().token
+        if token != "" {
+            request.setValue(token, forHTTPHeaderField: "Authorization")
+        }
         
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         

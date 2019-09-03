@@ -56,10 +56,11 @@ class TransactionsViewController: UIViewController {
             guard let `self` = self else { return }
             switch event {
             case .value(_):
-                self.setupSignals()
                 self.updateViews()
             case .failed(let error):
                 self.showAlert(title: "", message: error.localizedDescription)
+            case .completed:
+                self.updateViews()
             default:
                 break
             }

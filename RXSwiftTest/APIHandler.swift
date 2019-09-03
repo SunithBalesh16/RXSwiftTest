@@ -34,12 +34,17 @@ class APIHandler {
                     } catch {
                         observer.send(error: RXTestError.genericError)
                     }
+                    break
                 case .failed(let error):
                     observer.send(error: error)
                 default:
                     observer.send(error: RXTestError.genericError)
                 }
-            }).then(self.getBalance()).then(self.getTransactions()).start()
+            }).flatMap(.latest, { (value) -> SignalProducer<Data, RXTestError> in
+                return self.getBalance()
+            }).flatMap(.latest, { (value) -> SignalProducer<Data, RXTestError> in
+                return self.getTransactions()
+            }).start()
         }
         
     }
