@@ -73,7 +73,7 @@ class APIHandler {
         
     }
     
-    func makeTransaction() -> SignalProducer<Data,RXTestError> {
+    func makeTransaction(requestDict : [String:Any]) -> SignalProducer<Data,RXTestError> {
         
         return SignalProducer { (observer, lifetime) in
             Network.shared.makeRequest(request: Endpoint.spend()!).observe(on: UIScheduler()).on(event: {(event) in

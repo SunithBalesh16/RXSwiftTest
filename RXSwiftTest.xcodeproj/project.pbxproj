@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F26FDCB231E932B001A26A8 /* AddTransactionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F26FDCA231E932B001A26A8 /* AddTransactionVC.swift */; };
 		9FBC103F231694F6000177D4 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FBC103E231694F6000177D4 /* ReactiveSwift.framework */; };
 		9FBC104523190E0B000177D4 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC104423190E0B000177D4 /* Network.swift */; };
 		9FBC104723191AEE000177D4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC104623191AEE000177D4 /* API.swift */; };
@@ -47,6 +48,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9F26FDCA231E932B001A26A8 /* AddTransactionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionVC.swift; sourceTree = "<group>"; };
 		9FBC103E231694F6000177D4 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		9FBC104423190E0B000177D4 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		9FBC104623191AEE000177D4 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -104,6 +106,74 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9F26FDC2231E924D001A26A8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9FBC104B231926E0000177D4 /* Transaction.swift */,
+				9FBC1049231925F5000177D4 /* User.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		9F26FDC3231E9261001A26A8 /* Transactions */ = {
+			isa = PBXGroup;
+			children = (
+				9F26FDC9231E92ED001A26A8 /* TableViewCells */,
+				9F26FDC8231E92E0001A26A8 /* Controller */,
+			);
+			path = Transactions;
+			sourceTree = "<group>";
+		};
+		9F26FDC4231E9271001A26A8 /* AddTransaction */ = {
+			isa = PBXGroup;
+			children = (
+				9F26FDCA231E932B001A26A8 /* AddTransactionVC.swift */,
+			);
+			path = AddTransaction;
+			sourceTree = "<group>";
+		};
+		9F26FDC5231E9285001A26A8 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				9FBC104623191AEE000177D4 /* API.swift */,
+				9FBC104423190E0B000177D4 /* Network.swift */,
+				9FBC104F23192787000177D4 /* APIHandler.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		9F26FDC6231E92B2001A26A8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9FBC1051231952BB000177D4 /* UIViewController.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		9F26FDC7231E92BE001A26A8 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				9FBC104D23192720000177D4 /* Helper.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		9F26FDC8231E92E0001A26A8 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				9FC1B7282315AC7E00EB8087 /* TransactionsViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		9F26FDC9231E92ED001A26A8 /* TableViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				9FBC10552319B0A8000177D4 /* TransactionCell.swift */,
+			);
+			path = TableViewCells;
+			sourceTree = "<group>";
+		};
 		9FC1B71A2315AC7E00EB8087 = {
 			isa = PBXGroup;
 			children = (
@@ -128,21 +198,18 @@
 		9FC1B7252315AC7E00EB8087 /* RXSwiftTest */ = {
 			isa = PBXGroup;
 			children = (
+				9F26FDC7231E92BE001A26A8 /* Utility */,
+				9F26FDC6231E92B2001A26A8 /* Extensions */,
+				9F26FDC5231E9285001A26A8 /* Networking */,
+				9F26FDC4231E9271001A26A8 /* AddTransaction */,
+				9F26FDC3231E9261001A26A8 /* Transactions */,
+				9F26FDC2231E924D001A26A8 /* Model */,
 				9FC1B7262315AC7E00EB8087 /* AppDelegate.swift */,
-				9FBC104423190E0B000177D4 /* Network.swift */,
-				9FC1B7282315AC7E00EB8087 /* TransactionsViewController.swift */,
 				9FC1B72A2315AC7E00EB8087 /* Main.storyboard */,
 				9FC1B7302315AC8100EB8087 /* Assets.xcassets */,
 				9FC1B7322315AC8100EB8087 /* LaunchScreen.storyboard */,
 				9FC1B7352315AC8100EB8087 /* Info.plist */,
 				9FC1B72D2315AC7E00EB8087 /* RXSwiftTest.xcdatamodeld */,
-				9FBC104623191AEE000177D4 /* API.swift */,
-				9FBC1049231925F5000177D4 /* User.swift */,
-				9FBC104B231926E0000177D4 /* Transaction.swift */,
-				9FBC104D23192720000177D4 /* Helper.swift */,
-				9FBC104F23192787000177D4 /* APIHandler.swift */,
-				9FBC1051231952BB000177D4 /* UIViewController.swift */,
-				9FBC10552319B0A8000177D4 /* TransactionCell.swift */,
 			);
 			path = RXSwiftTest;
 			sourceTree = "<group>";
@@ -341,6 +408,7 @@
 				9FC1B7292315AC7E00EB8087 /* TransactionsViewController.swift in Sources */,
 				9FC1B7272315AC7E00EB8087 /* AppDelegate.swift in Sources */,
 				9FBC105023192787000177D4 /* APIHandler.swift in Sources */,
+				9F26FDCB231E932B001A26A8 /* AddTransactionVC.swift in Sources */,
 				9FBC104723191AEE000177D4 /* API.swift in Sources */,
 				9FBC104E23192720000177D4 /* Helper.swift in Sources */,
 			);
