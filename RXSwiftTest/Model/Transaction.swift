@@ -17,13 +17,18 @@ class Transaction: Codable {
     var amount =  ""
     var currency =  ""
     
+    var postObject : [String:Any] {
+        date = Helper.shared.getTimeFromDate(dateString: "\(Date())", currentDateFormat: "yyyy-MM-dd HH:mm:ss ZZZ", requiredDateFormat: "yyyy-MM-dd'T'HH:mm:ssZ")
+        return ["date": date, "description": transactionDesc, "amount": amount, "currency": User.shared().currency]
+    }
+    
     init(dict : [String:Any]) {
         
         if let temp = dict["id"] as? String {
             id = temp
         }
         if let temp = dict["date"] as? String {
-            date = Helper.getTimeFromDate(dateString: temp, currentDateFormat: "yyyy-MM-dd'T'HH:mm:ssZ", requiredDateFormat: "MMM dd,yyyy")
+            date = Helper.shared.getTimeFromDate(dateString: temp, currentDateFormat: "yyyy-MM-dd'T'HH:mm:ssZ", requiredDateFormat: "MMM dd,yyyy")
         }
         if let temp = dict["description"] as? String {
             transactionDesc = temp
@@ -36,6 +41,11 @@ class Transaction: Codable {
             currency = temp
         }
         
+    }
+    
+    init(desc : String, amount: String) {
+        self.transactionDesc = desc
+        self.amount = amount
     }
     
 }

@@ -10,8 +10,8 @@ import UIKit
 
 class User : Codable {
     
-    static let shared = User()
-    
+    private static var privateShared : User?
+
     //MARK: - Intance Variables
     var token : String
     var balance : String
@@ -25,6 +25,18 @@ class User : Codable {
         currency = ""
         loggedIn = false
         transactions = [Transaction]()
+    }
+    
+    class func shared() -> User { // change class to final to prevent override
+        guard let uwShared = privateShared else {
+            privateShared = User()
+            return privateShared!
+        }
+        return uwShared
+    }
+    
+    class func clearUser() {
+        privateShared = nil
     }
     
     //MARK: - Member functions
@@ -56,9 +68,9 @@ class User : Codable {
     
     func getCurrentUser() -> User {
         
-        guard let jsonString = UserDefaults.standard.value(forKey: "CURRENT_USER") as? String else {return User.shared}
-        guard let jsonData = jsonString.data(using: .utf8) else { return User.shared }
-        guard let userObject = try? JSONDecoder().decode(User.self, from: jsonData) else { return User.shared }
+        guard let jsonString = UserDefaults.standard.value(forKey: "CURRENT_USER") as? String else {return User.shared()}
+        guard let jsonData = jsonString.data(using: .utf8) else { return User.shared() }
+        guard let userObject = try? JSONDecoder().decode(User.self, from: jsonData) else { return User.shared() }
         return userObject
         
     }
