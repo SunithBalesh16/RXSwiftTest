@@ -9,13 +9,20 @@
 import UIKit
 import ReactiveSwift
 
-class TransactionsViewController: UIViewController {
+class TransactionsViewController: UIViewController, SegueHandlerType {
+    
+    enum SegueIdentifier: String {
+        case addTransactionSegue
+    }
     
     //MARK: - IBOutlets
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var transactionTableView: UITableView! {
         didSet {
             transactionTableView.tableFooterView = UIView(frame: CGRect.zero)
+            let refreshControl = UIRefreshControl()
+            refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+            transactionTableView.refreshControl = refreshControl
         }
     }
     @IBOutlet weak var balanceLabel: UILabel!
@@ -24,14 +31,15 @@ class TransactionsViewController: UIViewController {
     private var userSignal: SignalProducer<Data, RXTestError>?
     private var balanceSignal: SignalProducer<Data, RXTestError>?
     private var inProgressSignal: Disposable?
-    
     private var apiHandler = APIHandler.shared
     private var user : User {
         get {
-            return User.shared.getCurrentUser()
+            return User.shared()
         }
     }
+    private lazy var loadingVC = LoadingVC()
 
+    //MARK: - 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSignals()
@@ -39,7 +47,22 @@ class TransactionsViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
     
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        switch segueIdentifierForSegue(segue: segue) {
+        case .addTransactionSegue:
+            guard let destination = segue.destination as? AddTransactionVC else {return}
+            destination.delegate = self
+        }
+    }
+    
+    //MARK: - Private Methods
     private func setupSignals() {
+        add(loadingVC)
         if user.token != "" {
             userSignal = apiHandler.getBalance().then(apiHandler.getTransactions())
         } else {
@@ -54,13 +77,12 @@ class TransactionsViewController: UIViewController {
         inProgressSignal?.dispose()
         inProgressSignal = signal.observe(on: UIScheduler()).on(event: { [weak self] (event) in
             guard let `self` = self else { return }
+            self.loadingVC.remove()
             switch event {
             case .value(_):
                 self.updateViews()
             case .failed(let error):
                 self.showAlert(title: "", message: error.localizedDescription)
-            case .completed:
-                self.updateViews()
             default:
                 break
             }
@@ -71,7 +93,20 @@ class TransactionsViewController: UIViewController {
         self.balanceLabel.text = "Balance : \(user.balance)"
         self.transactionTableView.reloadData()
     }
-
+    
+    
+    //MARK: - User Interactions
+    @IBAction func addTransaction(_ sender: Any) {
+        performSegueWithIdentifier(segueIdentifier: .addTransactionSegue, sender: self)
+    }
+    
+    @objc func refresh(refreshControl: UIRefreshControl) {
+        add(loadingVC)
+        userSignal = apiHandler.getBalance().then(apiHandler.getTransactions())
+        observeChanges()
+        refreshControl.endRefreshing()
+    }
+    
 }
 
 extension TransactionsViewController : UITableViewDelegate , UITableViewDataSource {
@@ -87,6 +122,15 @@ extension TransactionsViewController : UITableViewDelegate , UITableViewDataSour
         cell.descriptionLabel.text = transaction.transactionDesc
         cell.dateLabel.text = transaction.date
         return cell
+    }
+    
+}
+
+extension TransactionsViewController : AddTransactionDelegate {
+    
+    func didAddTransaction() {
+        userSignal = apiHandler.getTransactions().then(apiHandler.getBalance())
+        observeChanges()
     }
     
 }

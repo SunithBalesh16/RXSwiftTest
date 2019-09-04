@@ -130,8 +130,7 @@
                                 </constraints>
                                 <state key="normal" backgroundImage="add"/>
                                 <connections>
-                                    <action selector="addTransaction:" destination="F56-jC-Scq" eventType="touchUpInside" id="j2Q-63-6Im"/>
-                                    <segue destination="rIQ-fT-7eZ" kind="show" identifier="SHOW_ADD_TRANSACTION" id="66d-Bh-a5W"/>
+                                    <action selector="addTransaction:" destination="F56-jC-Scq" eventType="touchUpInside" id="wVj-WW-lay"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -160,6 +159,7 @@
                         <outlet property="balanceLabel" destination="IUT-UJ-jZZ" id="hdL-Hv-S7n"/>
                         <outlet property="headerView" destination="wdv-hv-POs" id="vx5-du-a9z"/>
                         <outlet property="transactionTableView" destination="rEn-NW-A9F" id="WhQ-JK-3DG"/>
+                        <segue destination="rIQ-fT-7eZ" kind="show" identifier="addTransactionSegue" id="4F8-9R-SeB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cWd-XR-ctS" sceneMemberID="firstResponder"/>
@@ -249,7 +249,6 @@
                                                 <inset key="imageEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                                                 <state key="normal" image="back"/>
                                                 <connections>
-                                                    <action selector="addTransaction:" destination="F56-jC-Scq" eventType="touchUpInside" id="Lug-57-q7w"/>
                                                     <action selector="back:" destination="rIQ-fT-7eZ" eventType="touchUpInside" id="RgM-4Q-6aN"/>
                                                 </connections>
                                             </button>

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9F26FDCB231E932B001A26A8 /* AddTransactionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F26FDCA231E932B001A26A8 /* AddTransactionVC.swift */; };
+		9F26FDCD231EFC53001A26A8 /* LoadingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F26FDCC231EFC53001A26A8 /* LoadingVC.swift */; };
+		9F26FDCF231F0362001A26A8 /* Segue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F26FDCE231F0362001A26A8 /* Segue.swift */; };
 		9FBC103F231694F6000177D4 /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FBC103E231694F6000177D4 /* ReactiveSwift.framework */; };
 		9FBC104523190E0B000177D4 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC104423190E0B000177D4 /* Network.swift */; };
 		9FBC104723191AEE000177D4 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC104623191AEE000177D4 /* API.swift */; };
@@ -49,6 +51,8 @@
 
 /* Begin PBXFileReference section */
 		9F26FDCA231E932B001A26A8 /* AddTransactionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTransactionVC.swift; sourceTree = "<group>"; };
+		9F26FDCC231EFC53001A26A8 /* LoadingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingVC.swift; sourceTree = "<group>"; };
+		9F26FDCE231F0362001A26A8 /* Segue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segue.swift; sourceTree = "<group>"; };
 		9FBC103E231694F6000177D4 /* ReactiveSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveSwift.framework; path = Carthage/Build/iOS/ReactiveSwift.framework; sourceTree = "<group>"; };
 		9FBC104423190E0B000177D4 /* Network.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		9FBC104623191AEE000177D4 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -154,6 +158,8 @@
 			isa = PBXGroup;
 			children = (
 				9FBC104D23192720000177D4 /* Helper.swift */,
+				9F26FDCC231EFC53001A26A8 /* LoadingVC.swift */,
+				9F26FDCE231F0362001A26A8 /* Segue.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -401,8 +407,10 @@
 			files = (
 				9FBC104C231926E0000177D4 /* Transaction.swift in Sources */,
 				9FBC10562319B0A8000177D4 /* TransactionCell.swift in Sources */,
+				9F26FDCD231EFC53001A26A8 /* LoadingVC.swift in Sources */,
 				9FC1B72F2315AC7E00EB8087 /* RXSwiftTest.xcdatamodeld in Sources */,
 				9FBC104523190E0B000177D4 /* Network.swift in Sources */,
+				9F26FDCF231F0362001A26A8 /* Segue.swift in Sources */,
 				9FBC104A231925F5000177D4 /* User.swift in Sources */,
 				9FBC1052231952BB000177D4 /* UIViewController.swift in Sources */,
 				9FC1B7292315AC7E00EB8087 /* TransactionsViewController.swift in Sources */,
