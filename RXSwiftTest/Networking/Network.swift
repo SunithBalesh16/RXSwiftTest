@@ -59,13 +59,15 @@ class Network {
     func makeRequest(request : URLRequest) -> SignalProducer<Data,RXTestError> {
         return SignalProducer({ (observer, lifetime) in
             Alamofire.request(request).responseData(completionHandler: { (responseData) in
+                print(responseData.response?.url)
+                print(responseData.response?.statusCode)
                 switch responseData.result {
                 case .success(let data):
                     if responseData.response?.statusCode == 401 {
                         APIHandler.shared.login().observe(on: UIScheduler()).on(event: {(event) in
                             switch event {
                             case .value(_):
-                                observer.sendCompleted()
+                                observer.send(value: data)
                             case .failed(let error):
                                 observer.send(error: error)
                             default:

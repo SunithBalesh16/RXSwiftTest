@@ -40,9 +40,9 @@ struct Endpoint {
         return self.request(url: balanceUrlString, method: .GET, requestBody: nil)
     }
     
-    static func spend() -> URLRequest? {
+    static func spend(transaction: Transaction) -> URLRequest? {
         let spendUrlString = BaseURL  + "/spend"
-        return self.request(url: spendUrlString, method: .GET, requestBody: nil)
+        return self.request(url: spendUrlString, method: .POST, requestBody: transaction.postObject)
     }
     
     static func request(url: String, method: RequestMethod, requestBody : [String : Any]?) -> URLRequest? {
@@ -55,17 +55,16 @@ struct Endpoint {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         
-        let token = User.shared.getCurrentUser().token
+        let token = User.shared().token
         if token != "" {
             request.setValue(token, forHTTPHeaderField: "Authorization")
         }
         
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        if method == .POST {
-//            guard let body = requestBody else {return nil}
-//            let requestBody = try? JSONSerialization.data(withJSONObject: body, options: [])
-//            request.httpBody = requestBody
+        if let body = requestBody, method == .POST {
+            let requestBody = try? JSONSerialization.data(withJSONObject: body, options: [])
+            request.httpBody = requestBody
         }
         return request
     }

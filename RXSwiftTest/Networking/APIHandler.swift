@@ -16,7 +16,7 @@ class APIHandler {
     static let shared = APIHandler()
     
     //MARK: - Instance Members
-    private var user = User.shared.getCurrentUser()
+    private var user = User.shared()
     
     private init() {}
     
@@ -24,13 +24,15 @@ class APIHandler {
     func login() -> SignalProducer<Data,RXTestError> {
         
         return SignalProducer { [weak self] (observer, lifetime) in
+            guard let request = Endpoint.login() else {return}
             guard let `self` = self else { return }
-            Network.shared.makeRequest(request: Endpoint.login()!).observe(on: UIScheduler()).on(event: {(event) in
+            Network.shared.makeRequest(request: request).observe(on: UIScheduler()).on(event: {(event) in
                 switch event {
                 case .value(let value):
                     do {
                         let resultDict = try JSONSerialization.jsonObject(with: value, options: .allowFragments) as! [String:AnyObject]
                         self.user.updateUser(dict: resultDict)
+                        print("Login : \(observer)")
                     } catch {
                         observer.send(error: RXTestError.genericError)
                     }
@@ -44,25 +46,10 @@ class APIHandler {
                 return self.getBalance()
             }).flatMap(.latest, { (value) -> SignalProducer<Data, RXTestError> in
                 return self.getTransactions()
-            }).start()
-        }
-        
-    }
-    
-    func getTransactions() -> SignalProducer<Data, RXTestError> {
-        
-        return SignalProducer { [weak self] (observer, lifetime) in
-            Network.shared.makeRequest(request: Endpoint.transactions()!).observe(on: UIScheduler()).on(event: {(event) in
+            }).observe(on: UIScheduler()).on(event: {(event) in
                 switch event {
                 case .value(let value):
-                    guard let transactions = try? JSONSerialization.jsonObject(with: value, options: .allowFragments) as? [[String:Any]] else {return}
-                    self?.user.transactions = []
-                    print("Transactions")
-                    for transactionDict in transactions {
-                        self?.user.transactions.insert(Transaction(dict: transactionDict), at: 0)
-                    }
-                    self?.user.save()
-                    observer.sendCompleted()
+                    observer.send(value: value)
                 case .failed(let error):
                     observer.send(error: error)
                 default:
@@ -73,14 +60,40 @@ class APIHandler {
         
     }
     
-    func makeTransaction(requestDict : [String:Any]) -> SignalProducer<Data,RXTestError> {
+    func getTransactions() -> SignalProducer<Data, RXTestError> {
+        
+        return SignalProducer { [weak self] (observer, lifetime) in
+            guard let request = Endpoint.transactions() else {return}
+            guard let `self` = self else { return }
+            Network.shared.makeRequest(request: request).observe(on: UIScheduler()).on(event: {(event) in
+                switch event {
+                case .value(let value):
+                    guard let transactions = try? JSONSerialization.jsonObject(with: value, options: .allowFragments) as? [[String:Any]] else {return}
+                    self.user.transactions = []
+                    for transactionDict in transactions {
+                        self.user.transactions.insert(Transaction(dict: transactionDict), at: 0)
+                    }
+                    self.user.save()
+                    print("Transactions : \(observer)")
+                    observer.send(value: value)
+                case .failed(let error):
+                    observer.send(error: error)
+                default:
+                    observer.send(error: RXTestError.genericError)
+                }
+            }).start()
+        }
+        
+    }
+    
+    func makeTransaction(transaction : Transaction) -> SignalProducer<Data,RXTestError> {
         
         return SignalProducer { (observer, lifetime) in
-            Network.shared.makeRequest(request: Endpoint.spend()!).observe(on: UIScheduler()).on(event: {(event) in
+            guard let request = Endpoint.spend(transaction: transaction) else {return}
+            Network.shared.makeRequest(request: request).observe(on: UIScheduler()).on(event: {(event) in
                 switch event {
                 case .value(let value):
                     observer.send(value: value)
-                    observer.sendCompleted()
                 case .failed(let error):
                     observer.send(error: error)
                 default:
@@ -94,14 +107,17 @@ class APIHandler {
     func getBalance() -> SignalProducer<Data, RXTestError> {
         
         return SignalProducer { [weak self] (observer, lifetime) in
-            Network.shared.makeRequest(request: Endpoint.balance()!).observe(on: UIScheduler()).on(event: {(event) in
+            guard let request = Endpoint.balance() else {return}
+            guard let `self` = self else { return }
+            Network.shared.makeRequest(request: request).observe(on: UIScheduler()).on(event: {(event) in
                 switch event {
                 case .value(let value):
+                    print("Balance Value:\(String(data: value, encoding: String.Encoding.utf8)!)")
                     do {
                         let resultDict = try JSONSerialization.jsonObject(with: value, options: .allowFragments) as! [String:AnyObject]
-                        print("Balance")
-                        self?.user.updateUser(dict: resultDict)
-                        observer.sendCompleted()
+                        self.user.updateUser(dict: resultDict)
+                        print("Balance : \(observer)")
+                        observer.send(value: value)
                     } catch {
                         observer.send(error: RXTestError.genericError)
                     }
