@@ -10,6 +10,12 @@ import UIKit
 
 class Helper: NSObject {
     
+    static let shared = Helper()
+    
+    private lazy var dateFormatter = DateFormatter()
+    
+    private override init() {}
+    
     /**
      *  Method take in currency code and returns symbol for respective currency code
      *
@@ -33,8 +39,7 @@ class Helper: NSObject {
      *
      *  @return String
      */
-    class func getTimeFromDate(dateString : String , currentDateFormat : String , requiredDateFormat : String) -> String {
-        let dateFormatter = DateFormatter()
+    func getTimeFromDate(dateString : String , currentDateFormat : String , requiredDateFormat : String) -> String {
         dateFormatter.dateFormat = currentDateFormat
         dateFormatter.locale = Locale.init(identifier: "en_GB")
         let dateObj = dateFormatter.date(from: dateString)
