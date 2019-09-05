@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ReactiveSwift
 
 class User : Codable {
     
@@ -20,7 +21,7 @@ class User : Codable {
     var transactions : [Transaction]
     
     private init() {
-        token = "Bearer nukpymirqrtmykltocgi"
+        token = ""
         balance = ""
         currency = ""
         loggedIn = false
@@ -53,25 +54,6 @@ class User : Codable {
         }
         loggedIn = true
         
-        self.save()
     }
     
-    func save() {
-        
-        let encodedData = try? JSONEncoder().encode(self)
-        if let data = encodedData , let jsonString = String(data: data, encoding: .utf8) {
-            UserDefaults.standard.set(jsonString, forKey: "CURRENT_USER")
-            UserDefaults.standard.synchronize()
-        }
-        
-    }
-    
-    func getCurrentUser() -> User {
-        
-        guard let jsonString = UserDefaults.standard.value(forKey: "CURRENT_USER") as? String else {return User.shared()}
-        guard let jsonData = jsonString.data(using: .utf8) else { return User.shared() }
-        guard let userObject = try? JSONDecoder().decode(User.self, from: jsonData) else { return User.shared() }
-        return userObject
-        
-    }
 }
