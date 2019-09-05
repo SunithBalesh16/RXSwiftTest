@@ -49,6 +49,32 @@ enum RXTestError: Error {
             return "Uh oh, something went wrong"
         }
     }
+    
+    var code: Int {
+        switch self {
+        case .noInternet:
+            return 0
+        case .loginError:
+            return 0
+        case .statusCode(let code) :
+            switch code {
+            case 400 :
+                return code
+            case 401 :
+                return code
+            case 500...599 :
+                return code
+            default :
+                return 0
+            }
+        case .customError(_) :
+            return 0
+        case .defaultError(_) :
+            return 0
+        default:
+            return 0
+        }
+    }
 }
 
 class Network {
@@ -57,26 +83,19 @@ class Network {
     private init() {}
     
     func makeRequest(request : URLRequest) -> SignalProducer<Data,RXTestError> {
+        print(request.url)
         return SignalProducer({ (observer, lifetime) in
             Alamofire.request(request).responseData(completionHandler: { (responseData) in
-                print(responseData.response?.url)
-                print(responseData.response?.statusCode)
                 switch responseData.result {
                 case .success(let data):
-                    if responseData.response?.statusCode == 401 {
-                        APIHandler.shared.login().observe(on: UIScheduler()).on(event: {(event) in
-                            switch event {
-                            case .value(_):
-                                observer.send(value: data)
-                            case .failed(let error):
-                                observer.send(error: error)
-                            default:
-                                observer.send(error: RXTestError.genericError)
-                            }
-                        }).start()
-                    } else {
+                    guard let statusCode = responseData.response?.statusCode else { return }
+                    switch statusCode {
+                    case 200...204:
                         observer.send(value: data)
+                    default:
+                        observer.send(error: RXTestError.statusCode(statusCode))
                     }
+                    observer.send(value: data)
                 case .failure(let error):
                     if let err = error as? URLError, err.code  == URLError.Code.notConnectedToInternet {
                         observer.send(error: .noInternet)

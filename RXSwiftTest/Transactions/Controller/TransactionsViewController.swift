@@ -28,8 +28,7 @@ class TransactionsViewController: UIViewController, SegueHandlerType {
     @IBOutlet weak var balanceLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    private var userSignal: SignalProducer<Data, RXTestError>?
-    private var balanceSignal: SignalProducer<Data, RXTestError>?
+    private var userSignal: SignalProducer<User, RXTestError>?
     private var inProgressSignal: Disposable?
     private var apiHandler = APIHandler.shared
     private var user : User {
@@ -62,12 +61,15 @@ class TransactionsViewController: UIViewController, SegueHandlerType {
     
     //MARK: - Private Methods
     private func setupSignals() {
+        
         add(loadingVC)
-        if user.token != "" {
-            userSignal = apiHandler.getBalance().then(apiHandler.getTransactions())
-        } else {
-            userSignal = apiHandler.login()
-        }
+        
+        userSignal = apiHandler.login().flatMap(.concat, { (data) -> SignalProducer<User, RXTestError> in
+            return self.apiHandler.getBalance()
+        }).flatMap(.concat, { (data) -> SignalProducer<User, RXTestError> in
+            return self.apiHandler.getTransactions()
+        })
+        
     }
     
     private func observeChanges() {
@@ -102,7 +104,9 @@ class TransactionsViewController: UIViewController, SegueHandlerType {
     
     @objc func refresh(refreshControl: UIRefreshControl) {
         add(loadingVC)
-        userSignal = apiHandler.getBalance().then(apiHandler.getTransactions())
+        userSignal = apiHandler.getBalance().flatMap(.latest, { (data) -> SignalProducer<User, RXTestError> in
+            return self.apiHandler.getTransactions()
+        })
         observeChanges()
         refreshControl.endRefreshing()
     }
@@ -129,7 +133,9 @@ extension TransactionsViewController : UITableViewDelegate , UITableViewDataSour
 extension TransactionsViewController : AddTransactionDelegate {
     
     func didAddTransaction() {
-        userSignal = apiHandler.getTransactions().then(apiHandler.getBalance())
+        userSignal = apiHandler.getBalance().flatMap(.concat, { (data) -> SignalProducer<User, RXTestError> in
+            return self.apiHandler.getTransactions()
+        })
         observeChanges()
     }
     

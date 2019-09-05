@@ -21,7 +21,7 @@ class APIHandler {
     private init() {}
     
     //MARK: - Instance Methods
-    func login() -> SignalProducer<Data,RXTestError> {
+    func login() -> SignalProducer<User,RXTestError> {
         
         return SignalProducer { [weak self] (observer, lifetime) in
             guard let request = Endpoint.login() else {return}
@@ -32,24 +32,11 @@ class APIHandler {
                     do {
                         let resultDict = try JSONSerialization.jsonObject(with: value, options: .allowFragments) as! [String:AnyObject]
                         self.user.updateUser(dict: resultDict)
-                        print("Login : \(observer)")
+                        observer.send(value: self.user)
                     } catch {
                         observer.send(error: RXTestError.genericError)
                     }
                     break
-                case .failed(let error):
-                    observer.send(error: error)
-                default:
-                    observer.send(error: RXTestError.genericError)
-                }
-            }).flatMap(.latest, { (value) -> SignalProducer<Data, RXTestError> in
-                return self.getBalance()
-            }).flatMap(.latest, { (value) -> SignalProducer<Data, RXTestError> in
-                return self.getTransactions()
-            }).observe(on: UIScheduler()).on(event: {(event) in
-                switch event {
-                case .value(let value):
-                    observer.send(value: value)
                 case .failed(let error):
                     observer.send(error: error)
                 default:
@@ -60,7 +47,7 @@ class APIHandler {
         
     }
     
-    func getTransactions() -> SignalProducer<Data, RXTestError> {
+    func getTransactions() -> SignalProducer<User, RXTestError> {
         
         return SignalProducer { [weak self] (observer, lifetime) in
             guard let request = Endpoint.transactions() else {return}
@@ -73,9 +60,7 @@ class APIHandler {
                     for transactionDict in transactions {
                         self.user.transactions.insert(Transaction(dict: transactionDict), at: 0)
                     }
-                    self.user.save()
-                    print("Transactions : \(observer)")
-                    observer.send(value: value)
+                    observer.send(value: self.user)
                 case .failed(let error):
                     observer.send(error: error)
                 default:
@@ -104,7 +89,7 @@ class APIHandler {
         
     }
     
-    func getBalance() -> SignalProducer<Data, RXTestError> {
+    func getBalance() -> SignalProducer<User, RXTestError> {
         
         return SignalProducer { [weak self] (observer, lifetime) in
             guard let request = Endpoint.balance() else {return}
@@ -112,12 +97,10 @@ class APIHandler {
             Network.shared.makeRequest(request: request).observe(on: UIScheduler()).on(event: {(event) in
                 switch event {
                 case .value(let value):
-                    print("Balance Value:\(String(data: value, encoding: String.Encoding.utf8)!)")
                     do {
                         let resultDict = try JSONSerialization.jsonObject(with: value, options: .allowFragments) as! [String:AnyObject]
                         self.user.updateUser(dict: resultDict)
-                        print("Balance : \(observer)")
-                        observer.send(value: value)
+                        observer.send(value: self.user)
                     } catch {
                         observer.send(error: RXTestError.genericError)
                     }
