@@ -104,7 +104,7 @@ class TransactionsViewController: UIViewController, SegueHandlerType {
     
     @objc func refresh(refreshControl: UIRefreshControl) {
         add(loadingVC)
-        userSignal = apiHandler.getBalance().flatMap(.latest, { (data) -> SignalProducer<User, RXTestError> in
+        userSignal = apiHandler.getBalance().flatMap(.concat, { (data) -> SignalProducer<User, RXTestError> in
             return self.apiHandler.getTransactions()
         })
         observeChanges()
